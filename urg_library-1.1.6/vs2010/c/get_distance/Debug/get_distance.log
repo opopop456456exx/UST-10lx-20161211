@@ -1,0 +1,17 @@
+﻿生成启动时间为 2016/11/19 20:36:52。
+     1>项目“C:\Users\PC\Desktop\北阳激光雷达\UST-10LX资料\UST-10LX资料\urg_library-1.1.6\urg_library-1.1.6\vs2010\c\get_distance\get_distance.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         D:\VS2015\VC\bin\CL.exe /c /I..\..\..\include\c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TC /analyze- /errorReport:prompt ..\..\..\samples\c\get_distance.c ..\..\..\samples\c\open_urg_sensor.c
+         open_urg_sensor.c
+         get_distance.c
+         正在生成代码...
+       Link:
+         D:\VS2015\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\PC\Desktop\北阳激光雷达\UST-10LX资料\UST-10LX资料\urg_library-1.1.6\urg_library-1.1.6\vs2010\c\Debug\get_distance.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Users\PC\Desktop\北阳激光雷达\UST-10LX资料\UST-10LX资料\urg_library-1.1.6\urg_library-1.1.6\vs2010\c\Debug" urg.lib ws2_32.lib setupapi.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\PC\Desktop\北阳激光雷达\UST-10LX资料\UST-10LX资料\urg_library-1.1.6\urg_library-1.1.6\vs2010\c\Debug\get_distance.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\PC\Desktop\北阳激光雷达\UST-10LX资料\UST-10LX资料\urg_library-1.1.6\urg_library-1.1.6\vs2010\c\Debug\get_distance.lib" /MACHINE:X86 /SAFESEH Debug\get_distance.obj
+         Debug\open_urg_sensor.obj
+         "C:\Users\PC\Desktop\北阳激光雷达\UST-10LX资料\UST-10LX资料\urg_library-1.1.6\urg_library-1.1.6\vs2010\c\Debug\urg.lib"
+         get_distance.vcxproj -> C:\Users\PC\Desktop\北阳激光雷达\UST-10LX资料\UST-10LX资料\urg_library-1.1.6\urg_library-1.1.6\vs2010\c\Debug\get_distance.exe
+     1>已完成生成项目“C:\Users\PC\Desktop\北阳激光雷达\UST-10LX资料\UST-10LX资料\urg_library-1.1.6\urg_library-1.1.6\vs2010\c\get_distance\get_distance.vcxproj”(Build 个目标)的操作。
+
+已成功生成。
+
+已用时间 00:00:01.51
