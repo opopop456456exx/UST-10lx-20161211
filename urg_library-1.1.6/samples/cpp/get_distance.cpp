@@ -38,6 +38,14 @@ namespace
         cout << front_index <<","<<data[front_index] << " [mm], ("
              << time_stamp << " [msec])" << endl;
 
+		//for (i = 0; i < data.size(); i++)
+		//{    
+		//	if (data.at(i) == 0)
+		//		cout <<"\n"<<"break!!!!!!!!!!" << "step_f=" << i - 1 << "  " << "data1=" << data.at(i-2) << " " << "data2=" << data.at(i-1) << endl;
+		//	else
+		//	cout << "distant:" << data.at(i) << " " << "theta=" << theta.at(i) << "  " << endl;
+		//}
+
 #else
         // 慡偰偺僨乕僞偺 X-Y 偺埵抲傪昞帵  
         long min_distance = urg.min_distance();
@@ -175,24 +183,26 @@ int main(int argc, char *argv[])
 	urg.set_scanning_parameter(urg.deg2step(-90), urg.deg2step(+90), 0);
 #endif
     enum { Capture_times = 25 };
-    urg.start_measurement(Urg_driver::Distance, 1, 0);
+    urg.start_measurement(Urg_driver::Distance, 0, 0);
 	Pillar_t pillar_t;
 	IplImage* RadarImage = cvCreateImage(cvSize(RadarImageWdith, RadarImageHeight), IPL_DEPTH_8U, 3);
 //	IplImage* RadarImage2 = cvCreateImage(cvSize(RadarImageWdith, RadarImageHeight), IPL_DEPTH_8U, 3);
-	cvNamedWindow("Radar", 1);
+	cvNamedWindow("Radar", 1); 
 	cvNamedWindow("BreakedRadar", 1);         //窗口创建放在循环外,节省循环时间
 	cvNamedWindow("ArcRadar", 1);
 //	double time00= static_cast<double>(GetTickCount());
 	//double time0;
+	double time0 = (double)GetTickCount();
     for (int i = 0; ; ++i){
 
 	
 
         vector<long> data;
+		vector<double> theta;
         long time_stamp = 0;
 
 	
-		double time0 = (double)GetTickCount();
+		
 
 
 
@@ -201,30 +211,44 @@ int main(int argc, char *argv[])
 
 
 
-		urg.start_measurement(Urg_driver::Distance, 1, 0);  //损失帧率以进行算法操作
-        if (!urg.get_distance(data, &time_stamp)) {
+	//	urg.start_measurement(Urg_driver::Distance, 1, 0);  //损失帧率以进行算法操作
+        if (!urg.get_distance(data,theta, &time_stamp)) {
             cout << "Urg_driver::get_distance(): " << urg.what() << endl;
 			getchar();
             return 1;
         }
 //		printf("************************************************* QQQQQQQQQQQ\n\n");
-		
-       print_data(urg, data, time_stamp, openRadar.R_x, openRadar.R_y);
+//for (i = 0; i < data.size(); i++)
+//{    
+//	if (data.at(i) == 0)
+//		cout <<"\n"<<"break!!!!!!!!!!" << "step_f=" << i - 1 << "  " << "data1=" << data.at(i-2) << " " << "data2=" << data.at(i-1) << endl;
+//	else
+//	cout << "distant:" << data.at(i) << " " << "theta=" << theta.at(i) << "  " << endl;
+//}
+		//for (i = 0; i < data.size(); i++)
+		//{    
+		//	if (data.at(i) == 0)
+		//		cout <<"\n"<<"break!!!!!!!!!!" << "step_f=" << i - 1 << "  " << "data1=" << data.at(i-2) << " " << "data2=" << data.at(i-1) << endl;
+		//	else
+		//	cout << "distant:" << data.at(i) << " " << "theta=" << theta.at(i) << "  " << endl;
+		//}
+    //  print_data(urg, data, time_stamp, openRadar.R_x, openRadar.R_y);
 		//outputData(data, 25, i, output_file,arg); //一些显示、输出的
 		//outputData(data2, 6, output_file);
-		openRadar.RadarRead(data);          //从data到RadarRho把变量的范围扩大。其实可以直接用RadarRho代替data，获取距离数据时也一样，可能更省时间
+	//	openRadar.RadarRead(data);          //从data到RadarRho把变量的范围扩大。其实可以直接用RadarRho代替data，获取距离数据时也一样，可能更省时间
 	//	openRadar.CreateRadarImage2(RadarImage2, openRadar.R_x , openRadar.R_y) ;
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
-		openRadar.MedFilter(openRadar.RadarRho, openRadar.RadarTheta);    //中值滤波
+	//	openRadar.MedFilter(openRadar.RadarRho, openRadar.RadarTheta);    //中值滤波
 		
-	  openRadar.CreateRadarImage(RadarImage, openRadar.RadarRho, openRadar.RadarTheta);
-		cvShowImage("Radar", RadarImage);
+	//  openRadar.CreateRadarImage(RadarImage, openRadar.RadarRho, openRadar.RadarTheta);
+	//	cvShowImage("Radar", RadarImage);
 	
-		openRadar.BreakRadarRho();                    //有返回断点数但是没去用////慢！！！！！！！！！！
+		//openRadar.BreakRadarRho();                    //有返回断点数但是没去用////慢！！！！！！！！！！
 		
-		openRadar.CreateRadarImage(RadarImage, openRadar.BreakedRadarRho, openRadar.BreakedRadarTheta);
+		//openRadar.CreateRadarImage(RadarImage, openRadar.BreakedRadarRho, openRadar.BreakedRadarTheta);
+		openRadar.CreateRadarImageself(RadarImage, data, theta);
 		cvShowImage("BreakedRadar", RadarImage);
 
 		////在此处添加必要的算法 
@@ -245,13 +269,15 @@ int main(int argc, char *argv[])
 	//	{
 	//		break;
 	//	}
-	
-	double time_all = (double)GetTickCount() - time0;
-		fps = 1000 / time0;
-		//printf("%d\n",i);
-		if ((i % 40) == 0)
-			j++;
-  	cout << "all time:"<< time_all << endl;
+		if (i == 200)
+		{
+			double time_all = (double)GetTickCount() - time0;
+			fps = 1000 / time0;
+			//printf("%d\n",i);
+			if ((i % 40) == 0)
+				j++;
+			cout << "all time:" << time_all  << "    "<<"AVGTIME="<< time_all /200<<endl;
+		}
 
 
     }

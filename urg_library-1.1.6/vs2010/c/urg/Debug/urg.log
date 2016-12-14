@@ -1,9 +1,28 @@
-﻿生成启动时间为 2016/12/11 15:00:19。
-     1>项目“C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1209\urg_library-1209\urg_library-1.1.6\vs2010\c\urg\urg.vcxproj”在节点 2 上(Build 个目标)。
-     1>Lib:
-         urg.vcxproj -> C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1209\urg_library-1209\urg_library-1.1.6\vs2010\cpp\Debug\urg.lib
-     1>已完成生成项目“C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1209\urg_library-1209\urg_library-1.1.6\vs2010\c\urg\urg.vcxproj”(Build 个目标)的操作。
+﻿生成启动时间为 2016/12/14 20:36:20。
+     1>项目“C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\c\urg\urg.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         D:\VS2015\VC\bin\CL.exe /c /I..\..\..\include\c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\urg.pdb" /Gd /TC /analyze- /errorReport:prompt /wd4996 ..\..\..\src\urg_sensor.c
+         urg_sensor.c
+     1>c:\users\pc\desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\src\urg_sensor.c(993): warning C4028: 形参 3 与声明不同
+     1>c:\users\pc\desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\src\urg_sensor.c(993): warning C4028: 形参 4 与声明不同
+     1>c:\users\pc\desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\src\urg_sensor.c(993): warning C4029: 声明的形参表不同于定义
+     1>c:\users\pc\desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\src\urg_sensor.c(1003): warning C4028: 形参 3 与声明不同
+     1>c:\users\pc\desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\src\urg_sensor.c(1003): warning C4029: 声明的形参表不同于定义
+     1>c:\users\pc\desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\src\urg_sensor.c(1016): warning C4028: 形参 3 与声明不同
+     1>c:\users\pc\desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\src\urg_sensor.c(1016): warning C4028: 形参 4 与声明不同
+     1>c:\users\pc\desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\src\urg_sensor.c(1016): warning C4029: 声明的形参表不同于定义
+       Lib:
+         D:\VS2015\VC\bin\Lib.exe /OUT:"C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\cpp\Debug\urg.lib" /NOLOGO Debug\urg_connection.obj
+         Debug\urg_debug.obj
+         Debug\urg_ring_buffer.obj
+         Debug\urg_sensor.obj
+         Debug\urg_serial.obj
+         Debug\urg_serial_utils.obj
+         Debug\urg_tcpclient.obj
+         Debug\urg_utils.obj
+         urg.vcxproj -> C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\cpp\Debug\urg.lib
+     1>已完成生成项目“C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\c\urg\urg.vcxproj”(Build 个目标)的操作。
 
 已成功生成。
 
-已用时间 00:00:00.76
+已用时间 00:00:00.68

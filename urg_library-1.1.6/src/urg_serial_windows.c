@@ -29,9 +29,12 @@ static void set_timeout(urg_serial_t *serial, int timeout)
     COMMTIMEOUTS timeouts;
     GetCommTimeouts(serial->hCom, &timeouts);
 
-    timeouts.ReadIntervalTimeout = (timeout == 0) ? MAXDWORD : 0;
-    timeouts.ReadTotalTimeoutConstant = timeout;
-    timeouts.ReadTotalTimeoutMultiplier = 0;
+    timeouts.ReadIntervalTimeout = (timeout == 0) ? MAXDWORD : 0;     //读间隔超时
+    timeouts.ReadTotalTimeoutConstant = timeout;                      //读时间常量
+    timeouts.ReadTotalTimeoutMultiplier = 0;                          //读时间系数
+	 //此处设置不考虑间隔超时，只有总超时390ms约为16帧时间大小                           
+	/*将ReadIntervalTimeout设置为MAXDWORD，将ReadTotalTimeoutMultiplier  
+		和ReadTotalTimeoutConstant设置为0，表示读操作将立即返回存放在输入缓冲区的字符。*/
 
     SetCommTimeouts(serial->hCom, &timeouts);
 }

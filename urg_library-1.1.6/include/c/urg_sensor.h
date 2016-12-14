@@ -14,6 +14,8 @@ extern "C" {
 
 #include "urg_connection.h"
 
+
+#define DMAX  50
     /*!
     */
     typedef enum {
@@ -130,7 +132,7 @@ extern "C" {
     /*!
       \see urg_start_measurement(), urg_max_data_size()
     */
-    extern int urg_get_distance(urg_t *urg, long data[], long *time_stamp);
+    extern int urg_get_distance(urg_t *urg, long data[], double theta[],long *time_stamp);
 
 
     /*!

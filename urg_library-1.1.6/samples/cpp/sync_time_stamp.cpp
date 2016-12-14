@@ -25,7 +25,8 @@ namespace
         for (int i = 0; i < Print_times; ++i) {
             long time_stamp;
             vector<long> data;
-            urg.get_distance(data, &time_stamp);
+			vector<double> theta;
+            urg.get_distance(data,theta, &time_stamp);
 
             cout << ticks() << ", " << time_stamp << endl;
         }

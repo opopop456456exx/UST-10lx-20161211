@@ -1,9 +1,14 @@
-﻿生成启动时间为 2016/12/11 15:00:20。
-     1>项目“C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1209\urg_library-1209\urg_library-1.1.6\vs2010\cpp\urg_cpp\urg_cpp.vcxproj”在节点 2 上(Build 个目标)。
-     1>Lib:
-         urg_cpp.vcxproj -> C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1209\urg_library-1209\urg_library-1.1.6\vs2010\cpp\Debug\urg_cpp.lib
-     1>已完成生成项目“C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1209\urg_library-1209\urg_library-1.1.6\vs2010\cpp\urg_cpp\urg_cpp.vcxproj”(Build 个目标)的操作。
+﻿生成启动时间为 2016/12/14 21:12:36。
+     1>项目“C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\cpp\urg_cpp\urg_cpp.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         D:\VS2015\VC\bin\CL.exe /c /I..\..\..\include\cpp /I..\..\..\include\c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\urg_cpp.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\..\src\Urg_driver.cpp
+         Urg_driver.cpp
+       Lib:
+         D:\VS2015\VC\bin\Lib.exe /OUT:"C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\cpp\Debug\urg_cpp.lib" urg.lib /LIBPATH:"C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\cpp\Debug\\" /NOLOGO Debug\ticks.obj
+         Debug\Urg_driver.obj
+         urg_cpp.vcxproj -> C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\cpp\Debug\urg_cpp.lib
+     1>已完成生成项目“C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\cpp\urg_cpp\urg_cpp.vcxproj”(Build 个目标)的操作。
 
 已成功生成。
 
-已用时间 00:00:00.10
+已用时间 00:00:01.31

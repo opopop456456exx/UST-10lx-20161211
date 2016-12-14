@@ -160,6 +160,68 @@ void OpenRadar::CreateRadarImage(IplImage* RadarImage, vector<int>& RadarRho, ve
 
 }
 
+void OpenRadar::CreateRadarImageself(IplImage* RadarImage, vector<long>& data, vector<double>& the) {
+	//RadarImage = cvCreateImage(cvSize(RadarImageWdith,RadarImageHeight),IPL_DEPTH_8U,1);
+	cvZero(RadarImage);
+	//在中心加上一个圆心
+	//int halfWidth  = RadarImageWdith/2;
+	//int halfHeight = RadarImageHeight/2;
+	int dx = RadarImageWdith / 2;
+	int dy = RadarImageHeight * 3 / 4;
+
+	cvCircle(RadarImage, cvPoint(RadarImageWdith / 2, RadarImageHeight * 3 / 4), 3, CV_RGB(0, 255, 255), -1, 8, 0);
+	//cvCircle(RadarImage, cvPoint(RadarImageWdith / 2, RadarImageHeight *3/ 4), 400, CV_RGB(255, 255, 0), 1, 8, 0);
+
+	int x, y;
+	double theta, rho;
+	unsigned char * pPixel = 0;
+
+
+
+	//颜色
+	int colorIndex = 0, colorRGB;
+	int R = 255, G = 0, B = 0;
+	int pointCnt = 0;                 //这个计数也没用上
+
+
+
+	for (unsigned int i = 0; i < data.size(); i++)
+	{
+		//theta = (pointCnt/4.0 - 45)*pi/180;
+		theta = the.at(i);
+		rho = data.at(i);
+		if (rho <= 0)
+		{
+			//雷达数据断点标志
+			colorRGB = usualColor[colorIndex];
+			R = colorRGB / 65536;
+			G = (colorRGB % 65536) / 256;
+			B = colorRGB % 256;
+			colorIndex = (colorIndex + 1) % 10;        //十色一循环
+		}
+		else {
+			pointCnt++;
+
+			x = (int)(rho*cos(theta) / 10) + dx;
+			y = (int)(-rho*sin(theta) / 10) + dy;
+
+			if (x >= 0 && x < RadarImageWdith && y >= 0 && y < RadarImageHeight)
+			{
+				pPixel = (unsigned char*)RadarImage->imageData + y*RadarImage->widthStep + 3 * x;
+				pPixel[0] = B;
+				pPixel[1] = G;
+				pPixel[2] = R;
+			}
+			else {
+				//cout<<"x: "<<x<<"  y: "<<y<<endl;
+			}
+		}
+
+	}
+
+}
+
+
 
 
 void OpenRadar::CreateRadarImage2(IplImage* RadarImage, vector<long>& R_x, vector<long>& R_y) {

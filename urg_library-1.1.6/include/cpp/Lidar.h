@@ -59,7 +59,7 @@ namespace qrk
                                        int scan_times, int skip_scan) = 0;
 
         // !!! 受信データの受け取り
-        virtual bool get_distance(std::vector<long>& data,
+        virtual bool get_distance(std::vector<long>& data, std::vector<double>& theta,
                                   long *time_stamp) = 0;
         virtual bool get_distance_intensity(std::vector<long>& data,
                                             std::vector<unsigned short>&

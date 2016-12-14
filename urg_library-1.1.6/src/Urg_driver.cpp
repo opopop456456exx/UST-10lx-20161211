@@ -200,7 +200,7 @@ bool Urg_driver::start_measurement(measurement_type_t type,
 }
 
 
-bool Urg_driver::get_distance(std::vector<long>& data, long* time_stamp)
+bool Urg_driver::get_distance(std::vector<long>& data, std::vector<double>& theta, long* time_stamp)
 {
     if (pimpl->last_measure_type_ != Distance) {
         pimpl->urg_.last_errno = URG_MEASUREMENT_TYPE_MISMATCH;
@@ -208,15 +208,17 @@ bool Urg_driver::get_distance(std::vector<long>& data, long* time_stamp)
     }
 
     // 嵟戝僒僀僘傪妋曐偟丄偦偙偵僨乕僞傪奿擺偡傞     应确保最大的大小，以保证有空间存储数据
-    data.resize(max_data_size());
-	
-    int ret = urg_get_distance(&pimpl->urg_, &data[0], time_stamp);
+    data.resize(2*max_data_size());      //urg->last_data_index
+	theta.resize(2*max_data_size());
+    int ret = urg_get_distance(&pimpl->urg_, &data[0] , &theta[0], time_stamp);
 	
     if (ret > 0) {
         data.resize(ret);
+		theta.resize(ret);
         pimpl->adjust_time_stamp(time_stamp);
     }
 	
+//	printf("datasize=%d     \n", data.size());
     return (ret < 0) ? false : true;
 }
 

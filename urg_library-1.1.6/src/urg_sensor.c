@@ -19,14 +19,14 @@
 #if defined(URG_MSC)
 #define snprintf _snprintf
 #endif
-
+#define pi 3.141592653
 
 enum {
     URG_FALSE = 0,
     URG_TRUE = 1,
 
-    BUFFER_SIZE = 64 + 2 + 6,
-
+    BUFFER_SIZE = 64 + 2 + 6,       //64B data block + 1B sum +LF ('\0'),+6B最大可能性缓冲区平凑区……
+	                                //一个数据行加上上次最后未解码的几个数据最大不超过72B
     EXPECTED_END = -1,
 
     RECEIVE_DATA_TIMEOUT,
@@ -340,7 +340,7 @@ static int receive_parameter(urg_t *urg)
             int rpm = strtol(p + 5, NULL, 10);
             // 僞僀儉傾僂僩帪娫偼丄寁應廃婜偺 16 攞掱搙偺抣偵偡傞
             urg->scan_usec = 1000 * 1000 * 60 / rpm;
-            urg->timeout = urg->scan_usec >> (10 - 4);
+            urg->timeout = urg->scan_usec >> (10 - 4);          // 390
             received_bits |= 0x0040;
         }
         p += strlen(p) + 1;
@@ -413,7 +413,7 @@ static urg_measurement_type_t parse_distance_parameter(urg_t *urg,
         return URG_UNKNOWN;
     }
 
-    // 僷儔儊乕僞偺奿擺
+    // 参数的保存
     urg->received_first_index = parse_parameter(&echoback[2], 4);
     urg->received_last_index = parse_parameter(&echoback[6], 4);
     urg->received_skip_step = parse_parameter(&echoback[10], 2);
@@ -432,7 +432,7 @@ static urg_measurement_type_t parse_distance_echoback(urg_t *urg,
         return URG_STOP;
     }
 
-    line_length = strlen(echoback);
+    line_length = strlen(echoback);          //最后的\n被\0替换，\0不会被strlen计及
     if ((line_length == 12) &&
         ((echoback[0] == 'G') || (echoback[0] == 'H'))) {
         ret_type = parse_distance_parameter(urg, echoback);
@@ -445,7 +445,7 @@ static urg_measurement_type_t parse_distance_echoback(urg_t *urg,
 }
 
 
-static int receive_length_data(urg_t *urg, long length[],
+static int receive_length_data(urg_t *urg, long length[],double theta[],
                                unsigned short intensity[],
                                urg_measurement_type_t type, char buffer[])
 {
@@ -453,16 +453,17 @@ static int receive_length_data(urg_t *urg, long length[],
     int step_filled = 0;
     int line_filled = 0;
     int multiecho_index = 0;
-
+	int break_point = 0;
+	int last_rho;
     int each_size =
-        (urg->received_range_data_byte == URG_COMMUNICATION_2_BYTE) ? 2 : 3;
+        (urg->received_range_data_byte == URG_COMMUNICATION_2_BYTE) ? 2 : 3;     //此处URG_COMMUNICATION_2_BYTE为1,each_size为3
     int data_size = each_size;
     int is_intensity = URG_FALSE;
     int is_multiecho = URG_FALSE;
     int multiecho_max_size = 1;
 
     if ((type == URG_DISTANCE_INTENSITY) || (type == URG_MULTIECHO_INTENSITY)) {
-        data_size *= 2;
+        data_size *= 2;                  //2*3 或者2*2
         is_intensity = URG_TRUE;
     }
     if ((type == URG_MULTIECHO) || (type == URG_MULTIECHO_INTENSITY)) {
@@ -479,7 +480,7 @@ static int receive_length_data(urg_t *urg, long length[],
                                 urg->timeout);
 
         if (n > 0) {
-            // 僠僃僢僋僒儉偺昡壙
+            // 僠僃僢僋僒儉偺昡壙        检查和评价，校验和
             if (buffer[line_filled + n - 1] !=
                 scip_checksum(&buffer[line_filled], n - 1)) {
                 ignore_receive_data_with_qt(urg, urg->timeout);
@@ -490,16 +491,17 @@ static int receive_length_data(urg_t *urg, long length[],
         if (n > 0) {
             line_filled += n - 1;
         }
+
         last_p = p + line_filled;
 
         while ((last_p - p) >= data_size) {
             int index;
 
             if (*p == '&') {
-                // 愭摢暥帤偑 '&' 偩偭偨偲偒偼丄儅儖僠僄僐乕偺僨乕僞偲傒側偡
+                // 愭摢暥帤偑 '&' 偩偭偨偲偒偼丄儅儖僠僄僐乕偺僨乕僞偲傒側偡     先头文字里有“&”，视为有回波数据
 
                 if ((last_p - (p + 1)) < data_size) {
-                    // '&' 傪彍偄偰丄data_size 暘僨乕僞偑柍偗傟偽敳偗傞
+                    // '&' 傪彍偄偰丄data_size 暘僨乕僞偑柍偗傟偽敳偗傞    '&'以外，data _ size分数据；如果没有穿过
                     break;
                 }
 
@@ -509,22 +511,23 @@ static int receive_length_data(urg_t *urg, long length[],
                 --line_filled;
 
             } else {
-                // 師偺僨乕僞
+                // 師偺僨乕僞      下一数据
                 multiecho_index = 0;
             }
 
-            index = (step_filled * multiecho_max_size) + multiecho_index;
+          //  index = (step_filled * multiecho_max_size) + multiecho_index;   //DISTANT模式下，index=step_filled
+			index = (step_filled + break_point) ;                      //新的数据存放方式20161214
 
             if (step_filled >
                 (urg->received_last_index - urg->received_first_index)) {
-                // 僨乕僞偑懡夁偓傞応崌偼丄巆傝偺僨乕僞傪柍帇偟偰栠傞
+                // 僨乕僞偑懡夁偓傞応崌偼丄巆傝偺僨乕僞傪柍帇偟偰栠傞        数据有多的情况下，无视这些数据返回
                 ignore_receive_data_with_qt(urg, urg->timeout);
                 return set_errno_and_return(urg, URG_RECEIVE_ERROR);
             }
 
 
             if (is_multiecho && (multiecho_index == 0)) {
-                // 儅儖僠僄僐乕偺僨乕僞奿擺愭傪僟儈乕僨乕僞偱杽傔傞
+                // 儅儖僠僄僐乕偺僨乕僞奿擺愭傪僟儈乕僨乕僞偱杽傔傞     用虚拟数据填补了多个回声的数据存储
                 int i;
                 if (length) {
                     for (i = 1; i < multiecho_max_size; ++i) {
@@ -538,34 +541,65 @@ static int receive_length_data(urg_t *urg, long length[],
                 }
             }
 
-            // 嫍棧僨乕僞偺奿擺
+            // 嫍棧僨乕僞偺奿擺        距离数据的保存
+
             if (length) {
-                length[index] = urg_scip_decode(p, 3);
+                length[index] = urg_scip_decode(p, 3);                          // 解码
+				theta[index] = (0.25*pi / 180)*step_filled;                 //此处的弧度数要根据具体扫描角度来改
+
+//******************在此处内嵌代码*************************//
+			//point break//
+				
+				if (index > 0) {
+					if ((length[index] - last_rho)< DMAX){
+
+					}
+					else {
+						break_point++;
+						length[index + 1] = 0;
+						theta[index+1] = 1000;
+					}
+				}
+				last_rho = length[index];
+
+
+
+			//point break//
+
+//******************在此处内嵌代码*************************//
+
             }
             p += 3;
 
-            // 嫮搙僨乕僞偺奿擺
+
+
+            // 嫮搙僨乕僞偺奿擺     强度数据的保存
+
             if (is_intensity) {
                 if (intensity) {
                     intensity[index] = (unsigned short)urg_scip_decode(p, 3);
+					
+					
+
                 }
                 p += 3;
             }
 
             ++step_filled;
             line_filled -= data_size;
+
         }
 
-        // 師偵張棟偡傞暥帤傪戅旔
+        // 師偵張棟偡傞暥帤傪戅旔       把下面处理的文字退避，，不足三个的得弄到前面去形成新的一个
         memmove(buffer, p, line_filled);
-    } while (n > 0);
+    } while (n > 0);             //   最后一个LF的检测、、代表着一帧回复的结束。
 
-    return step_filled;
+    return step_filled+ break_point;
 }
 
 
 //! 嫍棧僨乕僞偺庢摼         距离数据采集
-static int receive_data(urg_t *urg, long data[], unsigned short intensity[],
+static int receive_data(urg_t *urg, long  data[], double theta[], unsigned short intensity[],
                         long *time_stamp)
 {
     urg_measurement_type_t type;
@@ -573,27 +607,29 @@ static int receive_data(urg_t *urg, long data[], unsigned short intensity[],
     int ret = 0;
     int n;
     int extended_timeout = urg->timeout
-        + 2 * (urg->scan_usec * (urg->scanning_skip_scan) / 1000);
+        + 2 * (urg->scan_usec * (urg->scanning_skip_scan) / 1000);     // 390 //timeout=25*16??
 
+//	printf("timeout=%d\nS", extended_timeout);
     // 僄僐乕僶僢僋偺庢摼     回响取得
-    n = connection_readline(&urg->connection,
+    n = connection_readline(&urg->connection,                         //此函数返回值不计及\n，返回但缓存区里的\n已被\0替换了。
                             buffer, BUFFER_SIZE, extended_timeout);
     if (n <= 0) {
         return set_errno_and_return(urg, URG_NO_RESPONSE);
     }   
     // 僄僐乕僶僢僋偺夝愅     回波分析
-    type = parse_distance_echoback(urg, buffer);
+    type = parse_distance_echoback(urg, buffer);    //  得到指令类型。以及各类参数
 
     // 墳摎偺庢摼     取得响应
     n = connection_readline(&urg->connection,
                             buffer, BUFFER_SIZE, urg->timeout);
-    if (n != 3) {
+
+    if (n != 3) {                                                            // status +status sum   3byte
         ignore_receive_data_with_qt(urg, urg->timeout);
         return set_errno_and_return(urg, URG_INVALID_RESPONSE);
     }
 
     if (buffer[n - 1] != scip_checksum(buffer, n - 1)) {
-        // 僠僃僢僋僒儉偺昡壙         校验
+        // 僠僃僢僋僒儉偺昡壙         status校验     99b或者00P
         ignore_receive_data_with_qt(urg, urg->timeout);
         return set_errno_and_return(urg, URG_CHECKSUM_ERROR);
     }
@@ -612,27 +648,32 @@ static int receive_data(urg_t *urg, long data[], unsigned short intensity[],
         }
     }
 
-    if (urg->specified_scan_times != 1) {
-        if (!strncmp(buffer, "00", 2)) {
-            // "00" 墳摎偺応崌偼丄僄僐乕僶僢僋墳摎偲傒側偟丄
-            // 嵟屻偺嬻峴傪撉傒幪偰丄師偐傜偺僨乕僞傪曉偡
-		/*	“00”，如果该响应是
-				视为回显应答，
-				丢弃在最后一个空白行，
-				从下一个返回数据*/
+
+	//下面621行至651行主要是部分回波解析，和status校验。
+	//经过这段代码，可以检测出第一次回声的00P，并且把那个空白行去掉
+	//评估指定扫描数和接到数据的status。
+	//有两个左右：
+	//一：校验，什么时候是00P和99b是有固定格式的，不符合则通信错误
+	//二：分流，通过指定扫描数和status可以调整语句流向，从而顺利连续得到正确的数据
+
+    if (urg->specified_scan_times != 1) {    //指定扫描帧数不为1
+        if (!strncmp(buffer, "00", 2)) {     //捕捉到00P
+			/*00状态只出现一次，无论是多次扫描指令还是
+				单次扫描，即第一次命令回响时status是00P，
+				后面的数据行都是99b*/
             n = connection_readline(&urg->connection,
                                     buffer, BUFFER_SIZE, urg->timeout);
 
-            if (n != 0) {
+            if (n != 0) {                    //00P后必跟着一个空白行
                 ignore_receive_data_with_qt(urg, urg->timeout);
                 return set_errno_and_return(urg, URG_INVALID_RESPONSE);
-            } else {
-                return receive_data(urg, data, intensity, time_stamp);
+            } else {                         //命令回响分析完了，开始连续读数据
+                return receive_data(urg, data,theta, intensity, time_stamp);
             }
         }
     }
 
-    if (((urg->specified_scan_times == 1) && (strncmp(buffer, "00", 2))) ||
+    if (((urg->specified_scan_times == 1) && (strncmp(buffer, "00", 2))) ||         //status校验
         ((urg->specified_scan_times != 1) && (strncmp(buffer, "99", 2)))) {
         if (urg->error_handler) {
             type = urg->error_handler(buffer, urg);
@@ -648,7 +689,7 @@ static int receive_data(urg_t *urg, long data[], unsigned short intensity[],
 
     // 僞僀儉僗僞儞僾偺庢摼
     n = connection_readline(&urg->connection,
-                            buffer, BUFFER_SIZE, urg->timeout);
+                            buffer, BUFFER_SIZE, urg->timeout);               // timestamp获取
     if (n > 0) {
         if (time_stamp) {
             *time_stamp = urg_scip_decode(buffer, 4);
@@ -656,15 +697,15 @@ static int receive_data(urg_t *urg, long data[], unsigned short intensity[],
     }
 	
     // 僨乕僞偺庢摼   数据采集
-    switch (type) {
+    switch (type) {               //switch 的用法要注意。
     case URG_DISTANCE:
     case URG_MULTIECHO:
-		ret = receive_length_data(urg, data, NULL, type, buffer); 
+		ret = receive_length_data(urg, data, theta, NULL, type, buffer);   //递归出口，获取长数据
         break;
 
     case URG_DISTANCE_INTENSITY:
     case URG_MULTIECHO_INTENSITY:
-        ret = receive_length_data(urg, data, intensity, type, buffer); 
+        ret = receive_length_data(urg, data, theta,intensity, type, buffer);
         break;
 
     case URG_STOP:
@@ -678,7 +719,7 @@ static int receive_data(urg_t *urg, long data[], unsigned short intensity[],
     if ((urg->specified_scan_times > 1) && (urg->scanning_remain_times > 0)) {
         if (--urg->scanning_remain_times <= 0) {
             // 僨乕僞偺掆巭偺傒傪峴偆    做数据的唯一停止
-            urg_stop_measurement(urg);
+            urg_stop_measurement(urg);                                     //有限次数获取数据方式下，扫描帧数的计数，未扫描完成的帧数为0则代表扫描完成，退出测量
         }
     }
 	
@@ -937,39 +978,39 @@ int urg_start_measurement(urg_t *urg, urg_measurement_type_t type,
 }
 
 
-int urg_get_distance(urg_t *urg, long data[], long *time_stamp)
+int urg_get_distance(urg_t *urg, long data[], double theta[],long *time_stamp)
 {
     if (!urg->is_active) {
         return set_errno_and_return(urg, URG_NOT_CONNECTED);
     }
-    return receive_data(urg, data, NULL, time_stamp);
+    return receive_data(urg, data, theta,NULL, time_stamp);
 }
 
 
 int urg_get_distance_intensity(urg_t *urg,
-                               long data[], unsigned short intensity[],
+                               long data[],double theta[], unsigned short intensity[],
                                long *time_stamp)
 {
     if (!urg->is_active) {
         return set_errno_and_return(urg, URG_NOT_CONNECTED);
     }
 
-    return receive_data(urg, data, intensity, time_stamp);
+    return receive_data(urg, data, theta, intensity, time_stamp);
 }
 
 
-int urg_get_multiecho(urg_t *urg, long data_multi[], long *time_stamp)
+int urg_get_multiecho(urg_t *urg, long data_multi[],double theta_multi[] ,long *time_stamp)
 {
     if (!urg->is_active) {
         return set_errno_and_return(urg, URG_NOT_CONNECTED);
     }
 
-    return receive_data(urg, data_multi, NULL, time_stamp);
+    return receive_data(urg, data_multi, theta_multi,NULL, time_stamp);
 }
 
 
 int urg_get_multiecho_intensity(urg_t *urg,
-                                long data_multi[],
+                                long data_multi[], double theta_multi[],
                                 unsigned short intensity_multi[],
                                 long *time_stamp)
 {
@@ -977,7 +1018,7 @@ int urg_get_multiecho_intensity(urg_t *urg,
         return set_errno_and_return(urg, URG_NOT_CONNECTED);
     }
 
-    return receive_data(urg, data_multi, intensity_multi, time_stamp);
+    return receive_data(urg, data_multi, theta_multi,intensity_multi, time_stamp);
 }
 
 
@@ -1000,7 +1041,7 @@ int urg_stop_measurement(urg_t *urg)
 
     for (i = 0; i < MAX_READ_TIMES; ++i) {
         // QT 偺墳摎偑曉偝傟傞傑偱丄嫍棧僨乕僞傪撉傒幪偰傞
-        ret = receive_data(urg, NULL, NULL, NULL);
+        ret = receive_data(urg, NULL,NULL, NULL, NULL);
         if (ret == URG_NO_ERROR) {
             // 惓忢墳摎
             urg->is_laser_on = URG_FALSE;

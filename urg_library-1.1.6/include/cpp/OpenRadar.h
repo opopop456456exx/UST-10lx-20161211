@@ -52,6 +52,7 @@ public:
     //数据读取
     bool RadarRead(const vector<long>& data);
     void CreateRadarImage(IplImage* RadarImage,  vector<int>& RadarRho, vector<double>& RadarTheta);
+	void OpenRadar::CreateRadarImageself(IplImage* RadarImage, vector<long>& data, vector<double>& the);
 	void CreateRadarImage2(IplImage* RadarImage, vector<long>& R_x, vector<long>& R_y);
 	int BreakRadarRho();//阈值如何选取  
 	void MedFilter(vector<int>& RadarRho, vector<double>& RadarTheta);//中值滤波

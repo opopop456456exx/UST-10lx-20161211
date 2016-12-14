@@ -1,9 +1,11 @@
-﻿生成启动时间为 2016/12/11 15:00:21。
-     1>项目“C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1209\urg_library-1209\urg_library-1.1.6\vs2010\cpp\sensor_parameter\sensor_parameter.vcxproj”在节点 5 上(Build 个目标)。
+﻿生成启动时间为 2016/12/14 21:12:39。
+     1>项目“C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\cpp\sensor_parameter\sensor_parameter.vcxproj”在节点 7 上(Build 个目标)。
      1>Link:
-         sensor_parameter.vcxproj -> C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1209\urg_library-1209\urg_library-1.1.6\vs2010\cpp\Debug\sensor_parameter.exe
-     1>已完成生成项目“C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1209\urg_library-1209\urg_library-1.1.6\vs2010\cpp\sensor_parameter\sensor_parameter.vcxproj”(Build 个目标)的操作。
+         D:\VS2015\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\cpp\Debug\sensor_parameter.exe" /INCREMENTAL /NOLOGO /LIBPATH:../Debug urg_cpp.lib ws2_32.lib setupapi.lib opencv_ml249d.lib opencv_calib3d249d.lib opencv_contrib249d.lib opencv_core249d.lib opencv_features2d249d.lib opencv_flann249d.lib opencv_gpu249d.lib opencv_highgui249d.lib opencv_imgproc249d.lib opencv_legacy249d.lib opencv_objdetect249d.lib opencv_ts249d.lib opencv_video249d.lib opencv_nonfree249d.lib opencv_ocl249d.lib opencv_photo249d.lib opencv_stitching249d.lib opencv_superres249d.lib opencv_videostab249d.lib opencv_objdetect249.lib opencv_ts249.lib opencv_video249.lib opencv_nonfree249.lib opencv_ocl249.lib opencv_photo249.lib opencv_stitching249.lib opencv_superres249.lib opencv_videostab249.lib opencv_calib3d249.lib opencv_contrib249.lib opencv_core249.lib opencv_features2d249.lib opencv_flann249.lib opencv_gpu249.lib opencv_highgui249.lib opencv_imgproc249.lib opencv_legacy249.lib opencv_ml249.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\cpp\Debug\sensor_parameter.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\cpp\Debug\sensor_parameter.lib" /MACHINE:X86 Debug\Connection_information.obj
+         Debug\sensor_parameter.obj
+         sensor_parameter.vcxproj -> C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\cpp\Debug\sensor_parameter.exe
+     1>已完成生成项目“C:\Users\PC\Desktop\激光雷达测试、开发\urg_library-1211\urg_library-1209\urg_library-1.1.6\vs2010\cpp\sensor_parameter\sensor_parameter.vcxproj”(Build 个目标)的操作。
 
 已成功生成。
 
-已用时间 00:00:00.63
+已用时间 00:00:01.13
